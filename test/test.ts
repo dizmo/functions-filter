@@ -1,35 +1,36 @@
 import { expect } from "chai";
-import { id } from "../lib";
+import { filter } from "../lib";
 
 import "mocha";
 
-describe("index.id", () => {
+describe("index.filter", () => {
     it("should exist", () => {
-        expect(id).to.not.be.an("undefined");
+        expect(filter).to.not.be.an("undefined");
     });
     it("should be a function", () => {
-        expect(id).to.be.a("function");
+        expect(filter).to.be.a("function");
     });
 });
 
-describe("index.id", () => {
-    it("should return nothing", () => {
-        expect(id()).to.equal(undefined);
+describe("index.filter", () => {
+    it("should return empty array", async () => {
+        expect(await filter([0,1,2,3,4], () => {
+            return Promise.resolve(false);
+        })).to.deep.equal([]);
     });
-    it("should return a value", () => {
-        expect(id(undefined)).to.equal(undefined);
-        expect(id(null)).to.equal(null);
-        expect(id(true)).to.equal(true);
+    it("should return full array", async () => {
+        expect(await filter([0,1,2,3,4], () => {
+            return Promise.resolve(true);
+        })).to.deep.equal([0,1,2,3,4]);
     });
-    it("should return an array", () => {
-        const a = id(undefined, null);
-        expect(a).to.be.an("array");
-        expect(a).to.include.members([undefined, null]);
-        const b = id(false, true);
-        expect(b).to.be.an("array");
-        expect(b).to.include.members([false, true]);
-        const c = id(0, 1);
-        expect(c).to.be.an("array");
-        expect(c).to.include.members([0, 1]);
+    it("should return even numbers", async () => {
+        expect(await filter([0,1,2,3,4], (n) => new Promise(
+            (resolve) => setTimeout(() => resolve(n % 2 === 0))
+        ))).to.deep.equal([0,2,4]);
+    });
+    it("should return odd numbers", async () => {
+        expect(await filter([0,1,2,3,4], (n) => new Promise(
+            (resolve) => setTimeout(() => resolve(n % 2 === 1))
+        ))).to.deep.equal([1,3]);
     });
 });

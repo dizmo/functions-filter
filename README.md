@@ -4,7 +4,7 @@
 
 # @dizmo/functions-filter
 
-Library module.
+Asynchronously filters an array of items: The `Array.prototype.filter` function does *not* allow to filter an array using asynchronous predicates. However by applying the `filter` function, it becomes possible to do so.
 
 ## Usage
 
@@ -17,13 +17,25 @@ npm install @dizmo/functions-filter --save
 ### Require
 
 ```javascript
-const lib = require('@dizmo/functions-filter');
+const { filter } = require('@dizmo/functions-filter');
 ```
 
 ### Examples
 
-```javascript
-...
+```typescript
+import { filter } from "@dizmo/functions-filter";
+```
+
+```typescript
+const even_numbers = await filter([0,1,2,3,4], (n) => new Promise(
+    (resolve) => setTimeout(() => resolve(n % 2 === 0))
+));
+```
+
+```typescript
+const odd_numbers = await filter([0,1,2,3,4], (n) => new Promise(
+    (resolve) => setTimeout(() => resolve(n % 2 === 1))
+));
 ```
 
 ## Development
@@ -114,4 +126,4 @@ npm publish --access=public
 
 ## Copyright
 
- © 2020 [Hasan Karahan](https://github.com/hsk81)
+ © 2020 [dizmo AG](http://dizmo.com/), Switzerland

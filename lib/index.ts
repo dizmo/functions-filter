@@ -1,23 +1,36 @@
-/* eslint @typescript-eslint/no-explicit-any: ["off"] */
 /**
- * Returns list of provided arguments as is without any modification.
+ * Asynchronously filters an array of items
  *
- * The identify function is a no-operation and it does not modify the
- * provided list of arguments. If no or a single argument is provided
- * then `undefined` or the same argument is returned.
+ * The `Array.prototype.filter` function does *not* allow to filter an array
+ * using asynchronous predicates. However by applying the `filter` function,
+ * it becomes possible to do so.
  *
- * @param {any[]} args
- *  object of arguments
- * @returns {any[]|undefined}
- *  array of arguments or `undefined`
+ * @example
+ * ```
+ * const even_numbers = await filter([0,1,2,3,4], (n) => Promise(
+ *     (resolve) => setTimeout(() => resolve(n % 2 === 0))
+ * ));
+ * ```
+ * @example
+ * ```
+ * const odd_numbers = await filter([0,1,2,3,4], (n) => Promise(
+ *     (resolve) => setTimeout(() => resolve(n % 2 === 1))
+ * ));
+ * ```
+ *
+ * @param array
+ *  array of items
+ * @param predicate
+ *  asynchronous function to filter items with
+ * @returns
+ *  filtered array of items
  */
-export function id(...args: any[]): any[]|undefined {
-    if (args.length === 0) {
-        return undefined;
-    }
-    if (args.length === 1) {
-        return args[0];
-    }
-    return args;
+export async function filter<T>(
+    array: T[], predicate: (item: T) => Promise<boolean>
+): Promise<T[]> {
+    const flags = await Promise.all(
+        array.map(predicate)
+    );
+    return array.filter((_, i) => flags[i]);
 }
-export default id;
+export default filter;
