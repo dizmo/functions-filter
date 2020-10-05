@@ -48,7 +48,7 @@
   "name": "@dizmo/functions-filter",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/dizmo/functions-filter"
   },
   "scripts": {
     "build": "node ./cli/run-build.js",
